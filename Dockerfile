@@ -1,20 +1,14 @@
-# Usa una imagen base con JDK 21 (compatible con Spring Boot)
-FROM openjdk:21-jdk-slim
+# Usamos una imagen base de OpenJDK (puedes ajustar la versión a la que requieras)
+FROM openjdk:17-jdk-slim
 
-# Configura el directorio de trabajo
-WORKDIR /app
-
-# Copia el código fuente y el archivo pom.xml
-COPY . .
-
-# Compila el proyecto con Maven (genera el .war)
-RUN ./mvnw clean package -DskipTests
-
-# Copia el archivo .war generado
-COPY target/*.war app.war
-
-# Expone el puerto de Tomcat (8080)
+# Indicamos que el contenedor expondrá el puerto 8080 (puedes modificar si usas otro)
 EXPOSE 8080
 
-# Ejecuta la aplicación
-CMD ["java", "-jar", "app.war"]
+# Argumento para pasar el nombre del jar generado
+ARG JAR_FILE=target/*.jar
+
+# Copiamos el jar dentro del contenedor
+COPY ${JAR_FILE} app.jar
+
+# Comando de entrada para ejecutar la aplicación
+ENTRYPOINT ["java", "-jar", "/app.jar"]
