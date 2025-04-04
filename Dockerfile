@@ -4,17 +4,17 @@ FROM openjdk:21-jdk-slim
 # Configura el directorio de trabajo
 WORKDIR /app
 
-# Copia el código fuente completo (incluyendo Maven y recursos)
+# Copia el código fuente y el archivo pom.xml
 COPY . .
 
-# Instala dependencias y compila el proyecto con Maven
+# Compila el proyecto con Maven (genera el .war)
 RUN ./mvnw clean package -DskipTests
 
-# Copia el archivo .war generado a la carpeta de despliegue
-COPY target/*.war /app/app.war
+# Copia el archivo .war generado
+COPY target/*.war app.war
 
-# Exponer el puerto de Tomcat (8080)
+# Expone el puerto de Tomcat (8080)
 EXPOSE 8080
 
-# Ejecutar la aplicación
+# Ejecuta la aplicación
 CMD ["java", "-jar", "app.war"]
